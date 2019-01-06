@@ -1,0 +1,225 @@
+<!-- 重点：MyCanvasRender， renderConstructor -->
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+    <!-- 原始地址：//webapi.amap.com/ui/1.0/ui/misc/PointSimplifier/examples/custom-render.html -->
+    <!-- <base href="//webapi.amap.com/ui/1.0/ui/misc/PointSimplifier/examples/" /> -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>自定义绘制引擎</title>
+    <style>
+    html,
+    body,
+    #container {
+        width: 100%;
+        height: 100%;
+        margin: 0px;
+    }
+    
+    #loadingTip {
+        position: absolute;
+        z-index: 9999;
+        top: 0;
+        right: 0;
+        padding: 3px 10px;
+        background: red;
+        color: #fff;
+        font-size: 13px;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="container"></div>
+    <script type="text/javascript" src='http://webapi.amap.com/maps?v=1.3&key=c496df98e7cab2a44bf3da155828cc03'></script>
+    <!-- UI组件库 1.0 -->
+    <script src="http://webapi.amap.com/ui/1.0/main.js"></script>
+    <script src="cluster_locations.js"></script>
+    <script src="cluster_id.js"></script>
+    <script type="text/javascript">
+    //创建地图
+    var map = new AMap.Map('container', {
+        zoom: 4
+    });
+
+    AMapUI.load(['ui/misc/PointSimplifier', 'lib/utils', 'lib/$'], function(PointSimplifier, utils, $) {
+
+        if (!PointSimplifier.supportCanvas) {
+            alert('当前环境不支持 Canvas！');
+            return;
+        }
+
+        /**
+         * 自定义绘制引擎
+         * @param {PointSimplifier} pointSimplifierIns 关联的PointSimplifier实例
+         * @param {Object} opts   配置
+         */
+        function MyCanvasRender(pointSimplifierIns, opts) {
+            //直接调用父类的构造函数
+            MyCanvasRender.__super__.constructor.apply(this, arguments);
+        }
+
+        //继承自默认的Canvas引擎（http://webapi.amap.com/ui/1.0/ui/misc/PointSimplifier/render/canvas.js）
+        utils.inherit(MyCanvasRender, PointSimplifier.Render.Canvas);
+
+        utils.extend(MyCanvasRender.prototype, {
+            /**
+             * 重新实现点的绘制方法
+             * @param  {number} zoom       当前的地图级别
+             * @param  {Array} activePoints 可以正常绘制的点
+             * @param  {Array} shadowPoints 空间被占用的点
+             */
+            renderNormalPoints: function(zoom, activePoints, shadowPoints) {
+                //先按默认逻辑处理shadowPoints
+                MyCanvasRender.__super__.renderNormalPoints.call(this, zoom, null, shadowPoints);
+
+                var pointStyle = this.getOption('pointStyle'),
+                    getPointsGroupKey = this.getOption('getPointsGroupKey'),
+                    pointStyleGroup = this.getOption('pointStyleGroup'),
+                    pointSimplifierIns = this.getPointSimplifierInstance(),
+                    groups = {};
+
+                //按key分组
+                for (var i = 0, len = activePoints.length; i < len; i++) {
+
+                    var point = activePoints[i],
+                        dataIndex = point.idx,
+                        dataItem = pointSimplifierIns.getDataItemByIndex(dataIndex);
+
+                    var key = getPointsGroupKey.call(this, dataItem, dataIndex);
+
+                    if (!groups[key]) {
+                        groups[key] = [];
+                    }
+
+                    groups[key].push(activePoints[i]);
+                }
+
+                //分组绘制
+                for (var k in groups) {
+
+                    //继承pointStyle中的默认属性
+                    var styleOptions = utils.extend({}, pointStyle, pointStyleGroup[k]);
+
+                    //调用父类的绘制函数
+                    this.drawPointsWithStyleOptions(groups[k], styleOptions);
+                }
+            }
+        });
+
+
+        var pointSimplifierIns = new PointSimplifier({
+
+            zIndex: 300,
+            map: map,
+            getPosition: function(item) {
+
+                if (!item) {
+                    return null;
+                }
+
+                var parts = item.split(',');
+
+                return [parseFloat(parts[0]), parseFloat(parts[1])];
+            },
+            getHoverTitle: function(dataItem, idx) {
+                return '序号: ' + idx;
+            },
+            //赋值为 MyCanvasRender
+            renderConstructor: MyCanvasRender,
+            renderOptions: {
+                getPointsGroupKey: function(dataItem, dataIndex) {
+                    //这里直接按索引取余，仅作示意
+                    return 'g' + (cluster_id[dataIndex] % 23);
+                },
+                //分组配置
+                pointStyleGroup: {
+                    'g0': {
+                        fillStyle: '#b41f1f'
+                    },
+                    'g1': {
+                        fillStyle: '#b41f6d'
+                    },
+                    'g2': {
+                        fillStyle: '#b41f90'
+                    },
+                    'g3': {
+                        fillStyle: '#901fb4'
+                    },
+                    'g4': {
+                        fillStyle: '#6d1fb4'
+                    },
+                    'g5': {
+                        fillStyle: '#5c1fb4'
+                    },
+                    'g6': {
+                        fillStyle: '#4a1fb4'
+                    },
+                    'g7': {
+                        fillStyle: '#301fb4'
+                    },
+                    'g8': {
+                        fillStyle: '#1f4ab4'
+                    },
+                    'g9': {
+                        fillStyle: '#1f76b4'
+                    },
+                    'g10': {
+                        fillStyle: '#1f99b4'
+                    },
+                    'g11': {
+                        fillStyle: '#1fb4ab'
+                    },
+                    'g12': {
+                        fillStyle: '#1fb488'
+                    },
+                    'g13': {
+                        fillStyle: '#1fb44a'
+                    },
+                    'g14': {
+                        fillStyle: '#6db41f'
+                    },
+                    'g15': {
+                        fillStyle: '#7fb41f'
+                    },
+                    'g16': {
+                        fillStyle: '#a2b41f'
+                    },
+                    'g17': {
+                        fillStyle: '#b4b31f'
+                    },
+                    'g18': {
+                        fillStyle: '#b4991f'
+                    },
+                    'g19': {
+                        fillStyle: '#b4761f'
+                    },
+                    'g20': {
+                        fillStyle: '#b4531f'
+                    },
+                    'g21': {
+                        fillStyle: '#b4421f'
+                    },
+                    'g22': {
+                        fillStyle: '#b41f1f'
+                    }
+                }
+            }
+        });
+
+        // $('<div id="loadingTip">加载数据，请稍候...</div>').appendTo(document.body);
+        // $.get('http://a.amap.com/amap-ui/static/data/10w.txt', function(csv) {
+
+        //     var data = csv.split('\n');
+
+        //     pointSimplifierIns.setData(data);
+
+        //     $('#loadingTip').remove();
+        // });
+        pointSimplifierIns.setData(data);
+    });
+    </script>
+</body>
+
+</html>
