@@ -1,105 +1,53 @@
 ### IntroduIntroduction
-This  is my Java course project, which consists of two parts.
-* Exercises for Data Structures
-* Advanced Algorithms Tasks
-
-![GitHub Logo](/screenshots/GIS_demonstrate.gif)
-![GitHub Logo2](/screenshots/GIS_demonstrate.png)
-
-### Exercises for Data Structures
-#### `Chapter 1` Linear List
-1. 
-Write an algorithm that removes all elements of the linear table A that have a value of b. Assume that there are n (n>0) elements in A, and use a sequential storage structure.
-
-2. 
-Write an algorithm that saves all odd-valued elements at the lower-index end in linear table A with the least times of exchanges, and the even-valued element stored at the higher-index end. Assume that there are n (n>0) elements in A, using a sequential storage structure.
-
-3. 
-Write an algorithm that deletes all nodes in the linear linked list that have a value of b. The list header is H.
-
-4. 
-The linear list A = (a1, a2, ..., am) and B = (b1, b2, ... bn) have m and n elements, respectively, using a linked storage structure. Write an algorithm that combines A and B into:
-C=(a1,b1,a2,b2,...,am,bm,bm+1,... bn) 
-or
-C=(a1,b1,a2,b2,...,an,bn,an+1,... am)
-
-5. 
-Write an algorithm that merges the ordered linked lists A and B into a new ordered linked list C. The header pointers of Tables A, B, and C are HA, HB, and HC.
-
-#### `Chapter 2` Array
-1. Write an algorithm that converts the sparse matrix A(mXn) into a triple representation.
-
-2. Write an algorithm that computes the sum of the two main diagonal elements of matrix A(nXn).
-
-3. Write an algorithm to find the smallest element in each row of the two-dimensional array A(m, n) and store the value of the element and its position in another two-dimensional array B(m, 3).
-
-4. Write an algorithm to implement the transpose of the matrix A(nXn).
+This  is my Java course project.
+I realized a shared bikes management tool with GUI, which consists of over 2,000 lines of Java code. After loading orders data, a Web Viewer is imbedded to display the bikes’ locations on the map. 
+I also realized data statistics and analysis, to sum up the order amount, calculate how many times a bike was used in average, etc., and visualize data by charts. 
+Furthermore, I used k-means algorithm in Java-ML module to cluster the places users like to rent and return the bikes, make a suggestion for the operating staff about where and how many shared bike to relocate for meeting customers' needs.
 
 
-#### `Chapter 3` Stack and Queue
+### `Section 1` Orders GIS Demonstration
+In this interface, the APP would demonstrate the locations of the orders within the user's specified time period.
 
-1. Elements a, b, c, d are pushed onto the stack, write an algorithm to judge the validity of popping order in question 1, and check the impossible popping order.
+#### Orders Locations Map
+The map is interactive, users could zoom in and check the detailed orders in any area.
+![GIS_demonstrate](/screenshots/GIS_demonstrate.png)
+![GIS_demonstrate](/screenshots/GIS_demonstrate.gif)
 
-2. Write an algorithm that simulates the operation of a queue (including the enqueue operation and the dequeue operation) with two stacks with the same size.
+#### Orders Time Period Specification
+After the user specifies the time, you need to click the button to redraw the map.
+![time_selection](/screenshots/time_selection.gif)
 
-3. Write a non-recursive algorithm that converts the decimal number to a hexadecimal number and outputs the converted number.
+### `Section 2` Orders Statistics
+#### Overall Orders Statistics
+This interface shows the total number of orders, the average riding time, the average riding distance, the average number of times the bike is used, and the number of times the user orders each day.
+![statistics](/screenshots/statistics.png)
 
-#### `Chapter 4` Tree
-1. Write a recursive algorithm to calculate the depth of the binary tree.
+#### Orders GIS Clutering
+Orders are clustered by geographic location and displayed on the map in different colors. Used K-Means algorithm.
+![GIS_clustering](/screenshots/GIS_clustering.png)
+![GIS_clustering](/screenshots/GIS_clustering.gif)
 
-2. Write a non-recursive algorithm that swaps the left and right subtrees of the binary tree.
+#### Orders Time Distribution
+Count the order quantity by hour and use a line chart to display the time distribution.
+![statistics_visualization](/screenshots/statistics_visualization.png)
 
-3. Write a non-recursive algorithm to find the node with a value of b in the binary classification tree.
+### `Section 3` Management Suggestions
+#### Orders Clutering Details
+Shows the location , the number of people parked, and the number of people who started riding of each of the cluster results.
+![clustering_details](/screenshots/clustering_details.png)
+#### Reallocation Suggestion
+Give advice on how operating staff can reallocate the bicycles, including how many bikes to relocated from which clustered location to another location. Using greedy algorithms to calculate allocations.
+![arrangement_solutions](/screenshots/arrangement_solutions.png)
 
-#### `Chapter 5` Graph
+### Technical Notes
+The package `application` contains all the UI codes, and the package `models` contains the core controller class, including file parsing, clustering and reallocation algorithms.
+The application should be started by the main method of `/src/application/UserInterface.java`, and will load the orders file `/src/orders/orders.txt` by default.
+The simulated orders data could be generated by `/src/orders/Creat_Inputs_Data.py`.
 
-1. Write an algorithm to generate a minimum cost spanning tree of weighted undirected connected graphs using the Prim method. The graph is represented by an adjacency matrix.
+The most important class is `/src/application/OrdersManager.java`. The followings are some of its methods.
+* `logistics`: Calculate the reallocation routines.
+* `writeSelectedLocation2JS`: Write the orders locations data to JavaScript file.
+* `calcu_basic_stat`: Calculate the statistics information. 
+* `clustering`: Cluster the orders by locations.
+* `cluster_with_info`: Cluster the orders by locations, and calculate statistic information about each cluster.
 
-2. Write an algorithm that traverses an undirected connected graph with a breadth traversal method. The graph is represented by an adjacency matrix.
-
-3. Write an algorithm that counts the in and out degree of each vertex in the directed graph. The directed graph is represented by an adjacency list.
-
-### Advanced Algorithms Tasks
-
-
-
-1. Write a program to implement the Josephus problem, with n, m, and k as external inputs, print the output.
-[Note] Sequential storage or linked storage can be used.
-
-2. Write a program with multiple functions to implement the addition of a univariate polynomial.
-It is required to 
-1) input two univariate polynomials first.
-2) Then establish corresponding linked lists.
-3) Then calculate the addition.
-4) Finally, output the new polynomial.
-
-3. Write a program that implements the input, transpose, and output of a sparse array represented by triplet. You can directly enter the triplet. The output result requires:
-1) Print the original input triplet and the corresponding matrix form;
-2) Print the transposed triplet and the corresponding matrix form.
-3) When printing in matrix form, the triplet must not be converted to a two-dimensional array.
-
-4. Write a program to achieve n-dimensional (n is an odd number) magic square. n is an external input parameter, and the output results are arranged in a square matrix.
-
-5. Write a program that implements the addition of two sparse matrixes represented by triple. 
-Program requirements:
-  1. Input sparse matrixes in the form of triplet;
-  2. Write a function that implements the addition of two triples represented matrixes.
-  3. Print the result of the addition in the form of triplet.
-
-6. Write a recursive program to solve the Tower of Hanoi problem. The number of disks is controlled by keyboard input, and print the order in which the disks are moved.
-
-7. Write a program that implements the conversion of the infix expression to the postfix expression. Requirements:
-  1. the keyboard enters an expression and ends with the character #;
-  2. The output is in the form of a postfix expression.
-
-8. Write a program, create a binary sort tree and traverse the binary sort tree with a inorder traversal algorithm. 
-Requirements:
-The binary sort tree is created in ascending order. The data is input through the keyboard, and the input ends with -1.
-
-9. Write a program that applies a quick sort method to sort an input sequence in ascending order.
-
-10. Write a program that uses the Scherr sort method to sort an input sequence in descending order.
-
-11. Write a program to solve the eight queens puzzle.
-
-12. Write a program to solve the knight’s tour problem.
