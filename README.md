@@ -1,7 +1,10 @@
-### IntroduIntroduction
-This  is my Java course project.
+### Introduction
+This is my Java course project.
+
 I realized a shared bikes management tool with GUI, which consists of over 2,000 lines of Java code. After loading orders data, a Web Viewer is imbedded to display the bikes’ locations on the map. 
+
 I also realized data statistics and analysis, to sum up the order amount, calculate how many times a bike was used in average, etc., and visualize data by charts. 
+
 Furthermore, I used k-means algorithm in Java-ML module to cluster the places users like to rent and return the bikes, make a suggestion for the operating staff about where and how many shared bike to relocate for meeting customers' needs.
 
 
